@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ORP 实时请求大屏</title>
+  </head>
+  <body>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const map = ['world', 'sichuan', 'chengdu'].includes(params.get('map')) ? params.get('map') : 'world';
+      const mode = params.get('mode') === '3d' ? '3d' : '2d';
+      location.replace(`/screen/?map=${encodeURIComponent(map)}&mode=${encodeURIComponent(mode)}`);
+    </script>
+  </body>
+</html>

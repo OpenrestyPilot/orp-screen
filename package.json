@@ -1,0 +1,9 @@
+{
+  "name": "orp-screen",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 5173 --directory public",
+    "build": "node scripts/build.mjs"
+  }
+}
