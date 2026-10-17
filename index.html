@@ -10,7 +10,14 @@
       const params = new URLSearchParams(location.search);
       const map = ['world', 'sichuan', 'chengdu'].includes(params.get('map')) ? params.get('map') : 'world';
       const mode = params.get('mode') === '3d' ? '3d' : '2d';
-      location.replace(`/screen/?map=${encodeURIComponent(map)}&mode=${encodeURIComponent(mode)}`);
+      const requestedScene = params.get('scene');
+      const scene = map === 'world' && ['globe', 'globe-light'].includes(requestedScene) ? `&scene=${encodeURIComponent(requestedScene)}` : '';
+      const theme = ['light', 'dark'].includes(params.get('theme')) ? `&theme=${encodeURIComponent(params.get('theme'))}` : '';
+      // The same image can be served at the domain root or behind /screen/.
+      // Keep the redirect within the current mount point so a /screen/ proxy
+      // cannot send the browser back to this redirect page indefinitely.
+      const base = location.pathname.startsWith('/screen/') ? '/screen/' : '/';
+      location.replace(`${base}index.html?map=${encodeURIComponent(map)}&mode=${encodeURIComponent(mode)}${scene}${theme}`);
     </script>
   </body>
 </html>

@@ -34,10 +34,15 @@
     }
     .header .sub { font-size: 12px; color: #7ea6d8; letter-spacing: 2px; }
     .header .clock { font-size: 18px; color: #ffd76e; font-family: Consolas, monospace; letter-spacing: 1px; }
-    .header-tools { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .fullscreen-button { border: 1px solid rgba(55, 198, 255, 0.45); border-radius: 5px; padding: 4px 10px; background: rgba(8, 22, 55, 0.8); color: #cfe3ff; font: inherit; font-size: 11px; cursor: pointer; }
-    .fullscreen-button:hover { background: rgba(22, 67, 130, 0.9); }
+    .header-tools { display: flex; align-items: center; gap: 14px; }
+    .fullscreen-button { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid transparent; border-radius: 50%; padding: 0; background: transparent; color: #91afd0; cursor: pointer; transition: color .18s ease, border-color .18s ease, background .18s ease; }
+    .fullscreen-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.45; }
+    .fullscreen-button:hover, .fullscreen-button:focus-visible { border-color: rgba(95, 190, 238, 0.3); background: rgba(30, 74, 122, 0.28); color: #d8f2ff; outline: none; }
+    .fullscreen-button.is-active { color: #7fe0f2; }
     .fullscreen-button[hidden] { display: none; }
+    .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid transparent; border-radius: 50%; padding: 0; background: transparent; color: #91afd0; cursor: pointer; transition: color .18s ease, border-color .18s ease, background .18s ease; }
+    .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.45; }
+    .theme-toggle:hover, .theme-toggle:focus-visible { border-color: rgba(95, 190, 238, 0.3); background: rgba(30, 74, 122, 0.28); color: #d8f2ff; outline: none; }
 
     /* 主体三栏 */
     .main { flex: 1; display: flex; gap: 10px; min-height: 0; }
@@ -48,7 +53,56 @@
       font-size: 14px; color: #9fd0ff; letter-spacing: 2px;
       text-shadow: 0 0 8px rgba(55, 198, 255, 0.6);
     }
+    .map-navigation { position: absolute; top: 38px; left: 14px; z-index: 6; display: flex; align-items: center; gap: 5px; max-width: calc(100% - 28px); overflow: auto; scrollbar-width: none; }
+    .map-navigation:empty { display: none; }
+    .map-navigation button { flex: 0 0 auto; border: 1px solid rgba(69, 153, 225, .25); border-radius: 4px; padding: 4px 7px; color: #9fc9e9; background: rgba(4, 14, 34, .78); font: inherit; font-size: 10px; cursor: pointer; }
+    .map-navigation button:hover, .map-navigation button[aria-current="page"] { border-color: rgba(69, 194, 239, .6); color: #e4f8ff; background: rgba(20, 67, 112, .85); }
+    .map-navigation .crumb-separator { flex: 0 0 auto; color: #5c83a8; font-size: 10px; }
     #map { position: absolute; inset: 0; }
+    #globeCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+    .center-map.globe-scene { border-color: rgba(64, 148, 255, 0.3); border-radius: 8px; background: radial-gradient(ellipse at 50% 42%, rgba(16, 48, 87, 0.82) 0%, rgba(8, 22, 55, 0.88) 48%, #050d20 100%); }
+    .globe-scene #map, .globe-scene .map-navigation { display: none; }
+    .globe-scene #globeCanvas { display: block; }
+    .globe-scene .map-title { color: #9fd0ff; font-size: 15px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(55, 198, 255, 0.45); }
+    .globe-scene .geo-status { color: #9fc7ee; border-color: rgba(64, 148, 255, 0.3); background: rgba(3, 10, 26, 0.78); }
+    .globe-scene .geo-attribution { color: #9fc7ee; text-shadow: 0 1px 3px #03060f; }
+    /* 所有地图共用的亮色主题 */
+    body.theme-light, body.theme-light.light-globe { color: #26344a; background: #edf1f8; }
+    .theme-light .screen { background: linear-gradient(145deg, #f2f5fb, #e8edf6); }
+    .theme-light .header { border: 1px solid #e0e6f0; border-radius: 8px; background: rgb(255 255 255 / 88%); box-shadow: 0 2px 8px rgb(39 58 87 / 4%); }
+    .theme-light .header::before, .theme-light .header::after { display: none; }
+    .theme-light .header h1 { color: #26344a; text-shadow: none; }
+    .theme-light .header .sub { color: #8794a8; }
+    .theme-light .header .clock { color: #5e6b81; }
+    .theme-light .fullscreen-button, .theme-light .theme-toggle { color: #8794a8; }
+    .theme-light .fullscreen-button:hover, .theme-light .fullscreen-button:focus-visible, .theme-light .theme-toggle:hover, .theme-light .theme-toggle:focus-visible { border-color: #d9e1ec; background: #f2f5fa; color: #42536d; }
+    .theme-light .center-map { border-color: #e0e6f0; background: #f7f9fc; }
+    .theme-light .center-map .map-title { color: #35435b; text-shadow: none; }
+    .theme-light .center-map.globe-scene { border-color: #e0e6f0; background: radial-gradient(ellipse at 50% 48%, #fafdff 0%, #f1f5fa 68%, #e8eef6 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
+    .theme-light .center-map.globe-scene .map-title { color: #35435b; text-shadow: none; }
+    .theme-light .map-navigation button { border-color: #dce4ef; color: #63738d; background: rgb(255 255 255 / 92%); }
+    .theme-light .map-navigation button:hover, .theme-light .map-navigation button[aria-current="page"] { border-color: #9eb1e5; color: #425ca5; background: #edf1fb; }
+    .theme-light .map-navigation .crumb-separator { color: #9aa7ba; }
+    .theme-light .side .panel { border-color: #e0e6f0; border-radius: 8px; background: rgb(255 255 255 / 92%); box-shadow: 0 2px 9px rgb(40 57 82 / 5%); }
+    .theme-light .panel::before { background: #8499e9; box-shadow: none; }
+    .theme-light .panel h3 { color: #52617a; }
+    .theme-light .panel h3::before { color: #8095e2; }
+    .theme-light .kpi { border-color: #edf0f6; background: #f7f8fc; }
+    .theme-light .kpi .label { color: #8994a6; }
+    .theme-light .kpi .value { color: #34425a; }
+    .theme-light .kpi .value.cyan { color: #6481d6; text-shadow: none; }
+    .theme-light .kpi .value.green { color: #39a984; text-shadow: none; }
+    .theme-light .kpi .value.red { color: #df7885; text-shadow: none; }
+    .theme-light .kpi .value.gold { color: #c59645; text-shadow: none; }
+    .theme-light .rank-item .name, .theme-light .node-row .n { color: #56647a; }
+    .theme-light .rank-item .no, .theme-light .rank-item:nth-child(1) .no, .theme-light .rank-item:nth-child(2) .no, .theme-light .rank-item:nth-child(3) .no { background: #edf1fa; color: #7184ce; }
+    .theme-light .rank-item .bar-wrap { background: #edf0f6; }
+    .theme-light .rank-item .bar { background: linear-gradient(90deg, #91a3ea, #7cc9d0); box-shadow: none; }
+    .theme-light .rank-item .num, .theme-light .node-row .v { color: #667baf; }
+    .theme-light .node-row { background: #f4f6fa; }
+    .theme-light .geo-status { color: #718099; border-color: #e0e6f0; background: rgb(255 255 255 / 88%); }
+    .theme-light .geo-attribution { color: #8390a2; text-shadow: none; }
+    .theme-light .loading { color: #718099; background: rgb(247 249 252 / 88%); }
 
     /* 面板 */
     .panel {
@@ -99,7 +153,9 @@
     .node-row .v { font-family: Consolas, monospace; color: #37c6ff; }
 
     .loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #7ea6d8; font-size: 14px; letter-spacing: 2px; z-index: 20; background: rgba(3, 6, 15, 0.8); }
-    .geo-status { position: absolute; right: 12px; bottom: 10px; z-index: 5; max-width: min(70%, 520px); padding: 6px 10px; border: 1px solid rgba(64, 148, 255, 0.35); border-radius: 6px; background: rgba(3, 10, 26, 0.78); color: #9fc7ee; font-size: 11px; line-height: 1.5; pointer-events: none; }
+    .geo-status { position: absolute; right: 12px; bottom: 36px; z-index: 5; max-width: min(70%, 520px); padding: 6px 10px; border: 1px solid rgba(64, 148, 255, 0.35); border-radius: 6px; background: rgba(3, 10, 26, 0.78); color: #9fc7ee; font-size: 11px; line-height: 1.5; pointer-events: none; }
+    .geo-attribution { position: absolute; right: 12px; bottom: 10px; z-index: 6; color: #9fc7ee; font-size: 10px; text-decoration: underline; text-underline-offset: 2px; text-shadow: 0 1px 3px #03060f; }
+    .geo-attribution[hidden] { display: none; }
   </style>
 </head>
 <body>
@@ -111,7 +167,12 @@
       </div>
       <div class="header-tools">
         <div class="clock" id="clock">--:--:--</div>
-        <button id="fullscreenButton" class="fullscreen-button" type="button" hidden>进入全屏</button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换到亮色主题" title="切换到亮色主题">
+          <svg id="themeIcon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" /><path d="M8 1.5v1.2M8 13.3v1.2M1.5 8h1.2m10.6 0h1.2M3.4 3.4l.85.85m7.5 7.5.85.85m0-9.2-.85.85m-7.5 7.5-.85.85" /></svg>
+        </button>
+        <button id="fullscreenButton" class="fullscreen-button" type="button" aria-label="进入全屏" title="进入全屏" hidden>
+          <svg id="fullscreenIcon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" /></svg>
+        </button>
       </div>
     </div>
     <div class="main">
@@ -132,9 +193,12 @@
       </div>
       <div class="center-map">
         <div class="map-title" id="mapTitle">--</div>
+        <nav class="map-navigation" id="mapNavigation" aria-label="行政区层级导航"></nav>
         <div id="map"></div>
+        <canvas id="globeCanvas" aria-label="全球点阵地球及实时 GeoIP 流量"></canvas>
         <div class="loading" id="loading">地图数据加载中…</div>
         <div class="geo-status" id="geoStatus" aria-live="polite">正在连接实时指标…</div>
+        <a class="geo-attribution" id="geoAttribution" href="https://db-ip.com" target="_blank" rel="noopener noreferrer" hidden>IP location data by DB-IP.com · CC BY 4.0</a>
       </div>
       <div class="side">
         <div class="panel">
@@ -151,23 +215,100 @@
 
   <script src="/maps/vendor/echarts.min.js"></script>
   <script src="/maps/vendor/echarts-gl.js"></script>
+  <script src="/dotted-globe.js?v=20261018-contrast-1"></script>
   <script>
   (function () {
     'use strict';
     // ===== URL 参数 =====
     var qs = new URLSearchParams(location.search);
-    var MAP_KEY = qs.get('map') || 'world';          // world | sichuan | chengdu
+    var MAP_KEY = qs.get('map') || 'world';          // legacy: world | sichuan | chengdu
+    var MAP_CODE = /^\d{6}$/.test(MAP_KEY) || MAP_KEY === '100000' ? MAP_KEY : '';
     var MODE = qs.get('mode') || '2d';               // 2d | 3d
+    var GLOBE_KIND = qs.get('scene');
+    var GLOBE_SCENE = MAP_KEY === 'world' && (GLOBE_KIND === 'globe' || GLOBE_KIND === 'globe-light');
+    var LIGHT_GLOBE = GLOBE_SCENE && GLOBE_KIND === 'globe-light';
+    if (GLOBE_SCENE) document.querySelector('.center-map').classList.add('globe-scene');
+    var themeQuery = qs.get('theme');
+    var THEME_STORAGE_KEY = 'orp-screen-theme';
+    var LIGHT_THEME = themeQuery === 'light';
+    if (themeQuery !== 'light' && themeQuery !== 'dark') {
+      try { LIGHT_THEME = localStorage.getItem(THEME_STORAGE_KEY) === 'light'; } catch (e) { LIGHT_THEME = false; }
+    }
+    if (LIGHT_THEME || LIGHT_GLOBE) document.body.classList.add('theme-light');
+    if (LIGHT_GLOBE) document.body.classList.add('light-globe');
     var TITLES = {
       world: ['世界地图', 'WORLDWIDE'],
       sichuan: ['四川省地图', 'SICHUAN PROVINCE'],
       chengdu: ['成都市地图', 'CHENGDU CITY'],
     };
     var GEO_FILES = { world: '/maps/world.json', sichuan: '/maps/sichuan.json', chengdu: '/maps/chengdu.json' };
+    var ADMIN_INDEX = null;
+    var CURRENT_CODE = MAP_CODE;
+    var CURRENT_NAME = TITLES[MAP_KEY] ? TITLES[MAP_KEY][0] : '中国地图';
+    var CURRENT_LEVEL = MAP_CODE === '100000' ? 0 : (MAP_CODE ? (MAP_CODE.slice(2) === '0000' ? 1 : (MAP_CODE.slice(4) === '00' ? 2 : 3)) : -1);
 
-    document.getElementById('title').textContent = 'ORP 实时请求大屏 · ' + TITLES[MAP_KEY][0] + '（' + MODE.toUpperCase() + '）';
-    document.getElementById('subtitle').textContent = 'REALTIME REQUEST MONITORING · ' + TITLES[MAP_KEY][0] + '流量态势';
-    document.getElementById('mapTitle').textContent = TITLES[MAP_KEY][0] + ' · 实时请求态势';
+    function updateTitles() {
+      document.getElementById('title').textContent = GLOBE_SCENE ? (LIGHT_GLOBE ? 'ORP 全球实时流量态势' : 'ORP 全球实时流量态势 · 点阵地球') : 'ORP 实时请求大屏 · ' + CURRENT_NAME + '（' + MODE.toUpperCase() + '）';
+      document.getElementById('subtitle').textContent = GLOBE_SCENE ? 'GLOBAL TRAFFIC MONITORING · GEOIP LIVE' : 'REALTIME REQUEST MONITORING · ' + CURRENT_NAME + '流量态势';
+      document.getElementById('mapTitle').textContent = GLOBE_SCENE ? (LIGHT_GLOBE ? '全球地理流量 · 实时 GeoIP' : '地理位置') : CURRENT_NAME + ' · 实时请求态势';
+    }
+
+    function findAdminNode(code, nodes) {
+      if (!code || !nodes) return null;
+      for (var i = 0; i < nodes.length; i++) {
+        if (String(nodes[i].code) === String(code)) return nodes[i];
+        var found = findAdminNode(code, nodes[i].children || []);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function adminPath(code) {
+      var path = [];
+      var walk = function (node, chain) {
+        var next = chain.concat([node]);
+        if (String(node.code) === String(code)) { path = next; return true; }
+        return (node.children || []).some(function (child) { return walk(child, next); });
+      };
+      if (ADMIN_INDEX) walk(ADMIN_INDEX, []);
+      return path;
+    }
+
+    function renderNavigation() {
+      var nav = document.getElementById('mapNavigation');
+      if (!nav || !CURRENT_CODE || !ADMIN_INDEX) { if (nav) nav.innerHTML = ''; return; }
+      nav.innerHTML = adminPath(CURRENT_CODE).map(function (node, index, chain) {
+        var separator = index ? '<span class="crumb-separator" aria-hidden="true">›</span>' : '';
+        var current = String(node.code) === String(CURRENT_CODE);
+        return separator + '<button type="button" data-admin-code="' + escapeHtml(node.code) + '"' + (current ? ' aria-current="page"' : '') + '>' + escapeHtml(node.name) + '</button>';
+      }).join('');
+    }
+
+    function loadAdminMap(code, name) {
+      var target = String(code);
+      var loading = document.getElementById('loading');
+      if (loading) { loading.style.display = 'flex'; loading.textContent = '地图数据加载中…'; }
+      return fetch('/maps/admin/' + encodeURIComponent(target) + '.json')
+        .then(function (response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+        .then(function (geo) {
+          var node = findAdminNode(target, ADMIN_INDEX ? [ADMIN_INDEX] : []);
+          CURRENT_CODE = target;
+          CURRENT_NAME = name || (node && node.name) || (geo.features[0] && geo.features[0].properties.name) || '行政区地图';
+          CURRENT_LEVEL = node ? node.level : CURRENT_LEVEL;
+          GEO_JSON = geo;
+          echarts.registerMap('orp', geo);
+          updateTitles();
+          renderNavigation();
+          curOption = MODE === '3d' ? option3d() : option2d();
+          if (mapChart) { mapChart.clear(); mapChart.setOption(curOption); }
+          if (loading) loading.style.display = 'none';
+          updateGeoStatus();
+        })
+        .catch(function (error) {
+          if (loading) { loading.style.display = 'flex'; loading.textContent = '地图加载失败：' + error; }
+          console.error('[orp-screen] administrative map load failed', target, error);
+        });
+    }
 
     // 静态地图只提供边界轮廓；点和流线来自后端 GeoIP 聚合。
     var geography = { state: 'loading', points: [], centers: [], flows: [], unknownRequests: 0 };
@@ -202,6 +343,7 @@
       statusCodes[3].value = Number(codes.c5xx || 0);
       renderPanels();
       updateCharts();
+      if (GLOBE_SCENE && window.__orpDottedGlobe) window.__orpDottedGlobe.update(geography);
     }
 
     window.addEventListener('message', function (event) {
@@ -216,6 +358,22 @@
     });
 
     var standalone = true;
+    var themeToggle = document.getElementById('themeToggle');
+    function setTheme(light, persist) {
+      LIGHT_THEME = Boolean(light);
+      document.body.classList.toggle('theme-light', LIGHT_THEME);
+      var label = LIGHT_THEME ? '切换到暗色主题' : '切换到亮色主题';
+      themeToggle.setAttribute('aria-label', label);
+      themeToggle.setAttribute('title', label);
+      document.getElementById('themeIcon').innerHTML = LIGHT_THEME
+        ? '<path d="M13.5 10.3A5.8 5.8 0 0 1 5.7 2.5 5.8 5.8 0 1 0 13.5 10.3Z" />'
+        : '<circle cx="8" cy="8" r="3" /><path d="M8 1.5v1.2M8 13.3v1.2M1.5 8h1.2m10.6 0h1.2M3.4 3.4l.85.85m7.5 7.5.85.85m0-9.2-.85.85m-7.5 7.5-.85.85" />';
+      if (persist) { try { localStorage.setItem(THEME_STORAGE_KEY, LIGHT_THEME ? 'light' : 'dark'); } catch (e) {} }
+      if (mapChart && curOption) mapChart.setOption(MODE === '3d' ? option3d() : option2d(), true);
+      if (statusChart) statusChart.setOption(statusOption(), true);
+    }
+    themeToggle.addEventListener('click', function () { setTheme(!LIGHT_THEME, true); });
+    setTheme(LIGHT_THEME, false);
     var fullscreenButton = document.getElementById('fullscreenButton');
     if (standalone) {
       fullscreenButton.hidden = false;
@@ -231,7 +389,15 @@
         }
       });
       document.addEventListener('fullscreenchange', function () {
-        fullscreenButton.textContent = document.fullscreenElement ? '退出全屏' : '进入全屏';
+        var isFullscreen = Boolean(document.fullscreenElement);
+        var label = isFullscreen ? '退出全屏' : '进入全屏';
+        var icon = document.getElementById('fullscreenIcon');
+        fullscreenButton.setAttribute('aria-label', label);
+        fullscreenButton.setAttribute('title', label);
+        fullscreenButton.classList.toggle('is-active', isFullscreen);
+        icon.innerHTML = isFullscreen
+          ? '<path d="M6 2.5H2.5V6M10 2.5h3.5V6M2.5 10v3.5H6M13.5 10v3.5H10" />'
+          : '<path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" />';
       });
 
       var publicStream = new EventSource('/api/public/screens/events');
@@ -296,9 +462,29 @@
     }, 1000);
 
     // ===== 图表 =====
-    var mapChart = echarts.init(document.getElementById('map'));
+    var mapChart = GLOBE_SCENE ? null : echarts.init(document.getElementById('map'));
     window.__orpMapChart = mapChart;
     var statusChart = echarts.init(document.getElementById('statusChart'));
+
+    if (mapChart) mapChart.on('click', function (params) {
+      if (!CURRENT_CODE || !GEO_JSON || !params || !params.name) return;
+      var feature = (GEO_JSON.features || []).find(function (item) {
+        var properties = item.properties || {};
+        return String(properties.name || properties.NAME || '') === String(params.name);
+      });
+      if (!feature || !feature.properties) return;
+      var code = feature.properties.adcode || feature.properties.code;
+      var node = findAdminNode(code, ADMIN_INDEX ? [ADMIN_INDEX] : []);
+      if (node && node.children && node.children.length) loadAdminMap(code, node.name);
+    });
+
+    document.getElementById('mapNavigation').addEventListener('click', function (event) {
+      var button = event.target.closest('button[data-admin-code]');
+      if (!button) return;
+      var code = button.getAttribute('data-admin-code');
+      var node = findAdminNode(code, ADMIN_INDEX ? [ADMIN_INDEX] : []);
+      if (node) loadAdminMap(node.code, node.name);
+    });
 
     function buildLinkData() {
       return (geography.flows || []).map(function (flow) {
@@ -329,6 +515,8 @@
     function updateGeoStatus() {
       var statusEl = document.getElementById('geoStatus');
       if (!statusEl) return;
+      var attributionEl = document.getElementById('geoAttribution');
+      if (attributionEl) attributionEl.hidden = geography.state !== 'ready' || !/dbip/i.test(geography.databaseType || '');
       if (geography.state === 'ready') {
         statusEl.textContent = 'GeoIP 采样 ' + (geography.sampledEvents || 0) + ' 条 · 未定位 ' + (geography.unknownRequests || 0) + ' 条';
       } else if (geography.state === 'error') {
@@ -343,13 +531,13 @@
     function option2d() {
       return {
         backgroundColor: 'transparent',
-        tooltip: { trigger: 'item', backgroundColor: 'rgba(6,16,40,0.9)', borderColor: '#2a6bd8', textStyle: { color: '#cfe3ff', fontSize: 12 } },
-        geo: { map: 'orp', silent: false, roam: true, zoom: 1.05, itemStyle: { areaColor: '#122a5e', borderColor: '#37c6ff', borderWidth: 0.8 }, emphasis: { itemStyle: { areaColor: '#1d4fa8' }, label: { color: '#cfe3ff', fontSize: 10 } }, label: { show: true, color: 'rgba(160,200,255,0.55)', fontSize: 9 } },
+        tooltip: { trigger: 'item', backgroundColor: LIGHT_THEME ? '#fff' : 'rgba(6,16,40,0.9)', borderColor: LIGHT_THEME ? '#dce4ef' : '#2a6bd8', textStyle: { color: LIGHT_THEME ? '#42536d' : '#cfe3ff', fontSize: 12 } },
+        geo: { map: 'orp', silent: false, roam: true, zoom: 1.05, itemStyle: { areaColor: LIGHT_THEME ? '#d7e3f5' : '#122a5e', borderColor: LIGHT_THEME ? '#7188ad' : '#37c6ff', borderWidth: LIGHT_THEME ? 1.2 : 0.8 }, emphasis: { itemStyle: { areaColor: LIGHT_THEME ? '#b8ccec' : '#1d4fa8', borderColor: LIGHT_THEME ? '#4d6896' : '#37c6ff', borderWidth: 1.5 }, label: { color: LIGHT_THEME ? '#263b5d' : '#cfe3ff', fontSize: 10 } }, label: { show: true, color: LIGHT_THEME ? '#465a79' : 'rgba(160,200,255,0.55)', fontSize: 9, textBorderColor: LIGHT_THEME ? 'rgba(255,255,255,.9)' : 'transparent', textBorderWidth: LIGHT_THEME ? 2 : 0 } },
         series: (function () {
           var flow = [{
             type: 'lines', coordinateSystem: 'geo', zlevel: 2, silent: true,
-            effect: { show: true, period: 4, trailLength: 0.25, symbol: 'arrow', symbolSize: 5, color: '#9ff4ff' },
-            lineStyle: { color: '#37c6ff', width: 1, opacity: 0.55, curveness: 0.28 },
+            effect: { show: true, period: 4, trailLength: 0.25, symbol: 'arrow', symbolSize: 5, color: LIGHT_THEME ? '#ec8192' : '#9ff4ff' },
+            lineStyle: { color: LIGHT_THEME ? '#e07a91' : '#37c6ff', width: 1, opacity: 0.65, curveness: 0.28 },
             data: buildLinkData(),
           }];
           return flow.concat([
@@ -358,7 +546,7 @@
               rippleEffect: { brushType: 'stroke', scale: 3.2, period: 4 },
               symbolSize: function () { return 12; },
               itemStyle: { shadowBlur: 12, shadowColor: '#ffd76e' },
-              label: { show: true, position: 'right', formatter: '{b}', color: '#ffe4a0', fontSize: 10 },
+              label: { show: true, position: 'right', formatter: '{b}', color: LIGHT_THEME ? '#96754a' : '#ffe4a0', fontSize: 10 },
               data: buildHubData(),
             },
             {
@@ -380,20 +568,20 @@
     function option3d() {
       return {
         backgroundColor: 'transparent',
-        tooltip: { show: true, backgroundColor: 'rgba(6,16,40,0.9)', borderColor: '#2a6bd8', textStyle: { color: '#cfe3ff', fontSize: 12 } },
+        tooltip: { show: true, backgroundColor: LIGHT_THEME ? '#fff' : 'rgba(6,16,40,0.9)', borderColor: LIGHT_THEME ? '#dce4ef' : '#2a6bd8', textStyle: { color: LIGHT_THEME ? '#42536d' : '#cfe3ff', fontSize: 12 } },
         geo3D: {
           map: 'orp', regionHeight: 3, shading: 'realistic',
-          // 微金属度 + 降粗糙：暗色科技风下保留地形起伏的高清质感
-          realisticMaterial: { roughness: 0.82, metalness: 0.08 },
-          viewControl: { alpha: 42, beta: 8, distance: 105, autoRotate: true, autoRotateSpeed: 4, autoRotateAfterStill: 3 },
+          // 主题对应不同区域明度，同时保持稳定着色，不暗示业务热点。
+          realisticMaterial: { roughness: 0.82, metalness: LIGHT_THEME ? 0.02 : 0.08 },
+          viewControl: { alpha: 42, beta: 8, distance: CURRENT_LEVEL === 0 ? 170 : (CURRENT_LEVEL === 1 ? 130 : (CURRENT_LEVEL === 2 ? 100 : 76)), autoRotate: true, autoRotateSpeed: 4, autoRotateAfterStill: 3 },
           // 偏冷光 + 提环境光：深蓝渐变基调下保证高亮区色彩饱满可辨
-          light: { main: { intensity: 1.2, shadow: true, alpha: 50, beta: 15 }, ambient: { intensity: 0.55 } },
+          light: { main: { intensity: LIGHT_THEME ? 1.05 : 1.2, shadow: true, alpha: 50, beta: 15 }, ambient: { intensity: LIGHT_THEME ? 0.8 : 0.55 } },
           regions: buildSatRegions(),
-          itemStyle: { color: '#081a3a', areaColor: '#081a3a', borderColor: 'rgba(72,152,255,0.32)', borderWidth: 0.6, opacity: 1 },
-          emphasis: { itemStyle: { color: '#1d5ad0', areaColor: '#1d5ad0' }, label: { show: true, color: '#cfe3ff', fontSize: 10 } },
-          label: { show: true, textStyle: { color: 'rgba(220,238,255,0.72)', fontSize: 9, borderWidth: 0 } },
+          itemStyle: { color: LIGHT_THEME ? '#e1e8f2' : '#081a3a', areaColor: LIGHT_THEME ? '#e1e8f2' : '#081a3a', borderColor: LIGHT_THEME ? 'rgba(80,103,139,0.78)' : 'rgba(72,152,255,0.48)', borderWidth: LIGHT_THEME ? 1.1 : 0.8, opacity: 1 },
+          emphasis: { itemStyle: { color: LIGHT_THEME ? '#c3d3e9' : '#1d5ad0', areaColor: LIGHT_THEME ? '#c3d3e9' : '#1d5ad0', borderColor: LIGHT_THEME ? '#536d99' : '#72b4ff', borderWidth: 1.5 }, label: { show: true, color: LIGHT_THEME ? '#263b5d' : '#cfe3ff', fontSize: 10 } },
+          label: { show: true, textStyle: { color: LIGHT_THEME ? '#354966' : 'rgba(220,238,255,0.82)', fontSize: 10, borderWidth: 0, textBorderColor: LIGHT_THEME ? 'rgba(255,255,255,.85)' : 'transparent', textBorderWidth: LIGHT_THEME ? 2 : 0 } },
           // 泛光增强：让高亮区域、地标与流线粒子产生科技感辉光
-          postEffect: { enable: true, bloom: { enable: true, bloomIntensity: 0.22 }, SSAO: { enable: true, quality: 'medium', radius: 2, intensity: 1.2 } },
+          postEffect: { enable: LIGHT_THEME ? false : true, bloom: { enable: true, bloomIntensity: 0.22 }, SSAO: { enable: true, quality: 'medium', radius: 2, intensity: 1.2 } },
         },
         series: (function () {
           var flow = [{
@@ -412,7 +600,7 @@
             {
               type: 'scatter3D', coordinateSystem: 'geo3D', blendMode: 'lighter',
               symbolSize: function () { return 10; },
-              label: { show: true, formatter: '{b}', position: 'top', distance: 4, textStyle: { color: '#ffe4a0', fontSize: 10, borderWidth: 0 } },
+              label: { show: true, formatter: '{b}', position: 'top', distance: 4, textStyle: { color: LIGHT_THEME ? '#8d6c3c' : '#ffe4a0', fontSize: 10, borderWidth: 0, textBorderColor: LIGHT_THEME ? '#fff' : 'transparent', textBorderWidth: LIGHT_THEME ? 2 : 0 } },
               data: buildHubData(),
             },
           ].concat(flow, [{
@@ -433,9 +621,9 @@
         series: [{
           type: 'pie', radius: ['52%', '74%'], center: ['50%', '50%'],
           avoidLabelOverlap: true,
-          itemStyle: { borderColor: '#081a3a', borderWidth: 2 },
-          label: { color: '#9fd0ff', fontSize: 11, formatter: '{b}\n{d}%' },
-          labelLine: { lineStyle: { color: 'rgba(64,148,255,0.5)' } },
+          itemStyle: { borderColor: LIGHT_THEME ? '#fff' : '#081a3a', borderWidth: 2 },
+          label: { color: LIGHT_THEME ? '#66758d' : '#9fd0ff', fontSize: 11, formatter: '{b}\n{d}%' },
+          labelLine: { lineStyle: { color: LIGHT_THEME ? 'rgba(124,143,177,0.42)' : 'rgba(64,148,255,0.5)' } },
           emphasis: { scale: true, scaleSize: 5 },
           data: statusCodes,
         }],
@@ -447,6 +635,7 @@
     /* ===== 3D 地图底色使用稳定哈希着色，不暗示业务热点 ===== */
     var GEO_JSON = null;
     var SAT_TECH = ['#071738', '#0a1f47', '#0d2756', '#102f64', '#143772', '#183f80', '#1d478e', '#224f9c', '#2859aa', '#2e63b8'];
+    var SAT_LIGHT = ['#dce6f5', '#e8edf7', '#d5e1f2', '#e3ebf7', '#ceddf0', '#e9eef7', '#d9e4f3', '#e2eaf5', '#d2def0', '#e6edf7'];
     function terrainIndex(name) {
       var h = 0, i;
       var s = String(name || '');
@@ -458,15 +647,15 @@
       return GEO_JSON.features.map(function (ft) {
         var name = (ft.properties && (ft.properties.name || ft.properties.NAME)) || '';
         // 普通区域：深蓝渐变底 + 亮蓝路网轮廓微光
-        var base = SAT_TECH[terrainIndex(name)];
-        return { name: name, itemStyle: { color: base, areaColor: base, borderColor: 'rgba(72,152,255,0.38)', borderWidth: 0.7 } };
+        var base = LIGHT_THEME ? SAT_LIGHT[terrainIndex(name)] : SAT_TECH[terrainIndex(name)];
+        return { name: name, itemStyle: { color: base, areaColor: base, borderColor: LIGHT_THEME ? 'rgba(74,97,133,0.78)' : 'rgba(72,152,255,0.5)', borderWidth: LIGHT_THEME ? 1 : 0.8 } };
       });
     }
 
     function updateCharts() {
       if (!curOption) return;
       var o = MODE === '3d' ? option3d() : option2d();
-      mapChart.setOption(o);
+      if (mapChart) mapChart.setOption(o);
       statusChart.setOption(statusOption());
     }
 
@@ -476,31 +665,48 @@
       requestAnimationFrame(drift);
       if (!curOption || ts - lastDrift < 120) return;
       lastDrift = ts;
-      try {
-        mapChart.setOption({ series: [{ id: 'particles', data: buildParticleData(ts) }] });
+        try {
+          if (!mapChart) return;
+          mapChart.setOption({ series: [{ id: 'particles', data: buildParticleData(ts) }] });
       } catch (e) { /* 粒子更新失败不影响主图 */ }
     })(0);
 
-    window.addEventListener('resize', function () { mapChart.resize(); statusChart.resize(); });
+    window.addEventListener('resize', function () { if (mapChart) mapChart.resize(); statusChart.resize(); });
 
     // ===== 启动 =====
     var loadingEl = document.getElementById('loading');
-    fetch(GEO_FILES[MAP_KEY])
-      .then(function (r) { return r.json(); })
-      .then(function (geo) {
-        echarts.registerMap('orp', geo);
-        GEO_JSON = geo;
-        curOption = MODE === '3d' ? option3d() : option2d();
-        mapChart.setOption(curOption);
-        if (loadingEl) loadingEl.style.display = 'none';
-        updateGeoStatus();
-      })
-      .catch(function (e) {
-        if (loadingEl) {
-          loadingEl.textContent = '地图渲染失败：' + e;
-        }
-        console.error('[orp-screen]', e);
-      });
+    if (MAP_CODE) {
+      fetch('/maps/admin/index.json')
+        .then(function (response) { if (!response.ok) throw new Error('行政区索引 HTTP ' + response.status); return response.json(); })
+        .then(function (index) {
+          ADMIN_INDEX = index;
+          var node = findAdminNode(MAP_CODE, [index]);
+          return loadAdminMap(MAP_CODE, (node && node.name) || (MAP_CODE === '100000' ? '中国' : '行政区地图'));
+        })
+        .catch(function (error) {
+          if (loadingEl) loadingEl.textContent = '行政区地图资源加载失败：' + error;
+          console.error('[orp-screen] administrative map index failed', error);
+        });
+    } else {
+      var legacyTitle = TITLES[MAP_KEY] || ['中国地图', 'CHINA'];
+      CURRENT_NAME = legacyTitle[0];
+      updateTitles();
+      fetch(GEO_FILES[MAP_KEY] || GEO_FILES.world)
+        .then(function (response) { return response.json(); })
+        .then(function (geo) {
+          echarts.registerMap('orp', geo);
+          GEO_JSON = geo;
+          curOption = MODE === '3d' ? option3d() : option2d();
+          if (mapChart) mapChart.setOption(curOption);
+          if (loadingEl) loadingEl.style.display = 'none';
+          updateGeoStatus();
+          if (GLOBE_SCENE && window.__orpDottedGlobe) window.__orpDottedGlobe.update(geography);
+        })
+        .catch(function (error) {
+          if (loadingEl) loadingEl.textContent = '地图渲染失败：' + error;
+          console.error('[orp-screen]', error);
+        });
+    }
   })();
   </script>
 </body>
